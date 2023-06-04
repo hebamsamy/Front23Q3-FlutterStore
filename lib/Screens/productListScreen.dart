@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:store/Logic/ProductHelper.dart';
+import 'package:store/Logic/provider/cartProvider.dart';
 import 'package:store/Models/product.dart';
 
 class ProductListScreen extends StatefulWidget {
@@ -27,16 +29,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: GridView(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1 / 2,
-            mainAxisSpacing: 20,
-            crossAxisSpacing: 20),
-        children: returnedList.map((e) => ProductItem(prd: e)).toList(),
-      ),
+    return GridView(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1 / 2,
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20),
+      children: returnedList.map((e) => ProductItem(prd: e)).toList(),
     );
   }
 }
@@ -54,8 +53,8 @@ class ProductItem extends StatelessWidget {
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
-          child: Image.asset(
-            "assets/images/bg.jpg",
+          child: Image.network(
+            prd.imgURL,
             fit: BoxFit.cover,
           ),
         ),
@@ -63,9 +62,14 @@ class ProductItem extends StatelessWidget {
       footer: GridTileBar(
         backgroundColor: Color.fromARGB(104, 220, 214, 214),
         title: Text(prd.name),
-        trailing: Icon(
-          Icons.star,
-          color: Colors.yellow,
+        trailing: IconButton(
+          onPressed: () {
+            Provider.of<CartProvider>(context, listen: false).add(prd);
+          },
+          icon: Icon(
+            Icons.shopping_bag_rounded,
+            color: Colors.white,
+          ),
         ),
         leading: Icon(
           Icons.favorite,
